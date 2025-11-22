@@ -3,8 +3,9 @@ import requests
 ENDPOINT = "http://localhost:8000/api/token/"
 
 data = {
-    "email": "imad@gmail.com",
-    "password": "1111"
+    "email":"imad@gmail.com",
+    "password": "Halu_tii77"
+    
 }
 
 response = requests.post(ENDPOINT, json=data)

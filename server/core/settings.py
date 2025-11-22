@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "accounts",
     "rest_framework_simplejwt.token_blacklist",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +60,25 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = "accounts.User"
 
 ROOT_URLCONF = 'core.urls'
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+SESSION_COOKIE_SAMESITE = "Lax"
+
+CSRF_COOKIE_SAMESITE = "Lax"
+
+SESSION_COOKIE_SECURE = False
+
+CSRF_COOKIE_SECURE = False
+
 
 TEMPLATES = [
     {
@@ -130,6 +152,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK={
     "DEFAULT_AUTHENTICATION_CLASSES":(
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
