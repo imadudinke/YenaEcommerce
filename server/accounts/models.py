@@ -30,8 +30,8 @@ class UserManager(BaseUserManager):
 
 
 
-class User(AbstractBaseUser,PermissionsMixin):
-    email=models.EmailField(unique=True)
+class User(AbstractBaseUser,PermissionsMixin,models.Model):
+    email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255, blank=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -42,5 +42,4 @@ class User(AbstractBaseUser,PermissionsMixin):
     REQUIRED_FIELDS = [] 
 
     objects = UserManager()
-    def __str__(self):
-        return self.email
+  
