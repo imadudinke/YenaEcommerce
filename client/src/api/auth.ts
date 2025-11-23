@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/authStore";
 import apiFetch from "./fetchClient";
 
 const loginAuth = async (email: string, password: string) => {
@@ -7,7 +8,7 @@ const loginAuth = async (email: string, password: string) => {
       body: JSON.stringify({ email, password }),
     });
 
-    console.log(data);
+    useAuthStore.getState().setUser(data);
     return data;
   } catch (error) {
     console.error(error);

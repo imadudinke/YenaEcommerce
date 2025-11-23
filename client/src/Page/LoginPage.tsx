@@ -1,8 +1,10 @@
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { LoginForm } from "@/components/login-form";
+import { useAuthStore } from "@/store/authStore";
 
 const LoginPage = () => {
+  const user = useAuthStore((state) => state.user);
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -11,7 +13,7 @@ const LoginPage = () => {
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            Acme Inc.
+            {user ? <p>Welcome, {user.full_name}</p> : <p>Not logged in</p>}
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">

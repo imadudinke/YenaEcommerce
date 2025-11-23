@@ -17,8 +17,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         tokens = serializer.validated_data
         access=tokens["access"]
         refresh=tokens["refresh"]
+
+        user_data = serializer.validated_data.get("user",{})
         response = Response(
-            {"message": "Login successful"},
+            {"message": "Login successful","user":user_data},
             status=status.HTTP_200_OK
         )
         
