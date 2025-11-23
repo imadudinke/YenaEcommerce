@@ -9,9 +9,13 @@ User=get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields = ("id", "email", "is_staff")
+        fields = ("id", "email", "is_staff","full_name")
         read_only_fields = ("id", "is_staff")
 
+class UserFullNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["full_name"]  
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(write_only=True,required=True, help_text="Use a strong password.")
@@ -41,8 +45,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
-    old_password=serializers.charField(required=True,write_only=True)
-    new_password=serializers.chartField(required=True,write_only=True)
+    old_password=serializers.CharField(required=True,write_only=True)
+    new_password=serializers.CharField(required=True,write_only=True)
     def validate_new_password(self,value):
         validate_password(value)
         return value
