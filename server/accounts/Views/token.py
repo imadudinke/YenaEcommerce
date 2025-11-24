@@ -2,6 +2,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.serializers.token import CustomTokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from carts.helper import merge_carts
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class=CustomTokenObtainPairSerializer
 
@@ -23,7 +24,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             {"message": "Login successful","user":user_data},
             status=status.HTTP_200_OK
         )
-        
+
+        if request.user.is_authenticated:
+            merge_carts(request, request.user)
+            
         response.set_cookie(
             key="access",
             value=access,
