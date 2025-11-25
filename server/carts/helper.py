@@ -9,6 +9,7 @@ def save_session_cart(request, cart):
 
 def merge_carts(request, user):
     session_cart = request.session.get("cart", {})
+    print(f"from Merging {session_cart}")
     if not session_cart:
         return
     cart, _ = Cart.objects.get_or_create(user=user)

@@ -16,6 +16,8 @@ class CartProductList(generics.GenericAPIView):
         if request.user.is_authenticated:
             cart, _ = Cart.objects.get_or_create(user=request.user)
             serializer = CartSerializer(cart)
+            session_cart = get_session_cart(request=request)
+            print(session_cart)
             return Response(serializer.data)
         session_cart = get_session_cart(request)
         items = []
@@ -35,12 +37,19 @@ class CartProductList(generics.GenericAPIView):
         })
 
 class AddToCartView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = [JWTAuthenticationFromCookie]
+
     def post(self, request):
+        print(f"DEBUG GET VIEW: Cookies received: {request.COOKIES}")
+        print(f"DEBUG GET VIEW: Session ID received: {request.session.session_key}")
+        
+        
+
+       
         product_id = request.data.get("product_id")
         quantity = int(request.data.get("quantity", 1))
-        permission_classes = [permissions.AllowAny]
-        authentication_classes = [JWTAuthenticationFromCookie]
-
+        
         if request.user.is_authenticated:
             print("Im Authenticated")
             cart, _ = Cart.objects.get_or_create(user=request.user)
@@ -66,5 +75,7 @@ class AddToCartView(APIView):
             session_cart[str(product_id)] = {"quantity": quantity}
 
         save_session_cart(request=request,cart=session_cart)
+        session_cart = get_session_cart(request)
+        print(f"DEBUG GET VIEW: Contents of retrieved session cart: {session_cart}")
 
         return Response({f"message": f"Item added to cart (guest) {request.session["cart"] }"}, status=200)
