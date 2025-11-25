@@ -21,6 +21,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields=("id","user","comment","rating","created_at")
 
 class ProductSerializer(serializers.ModelSerializer):
+
     category=CategorySerializer(read_only=True)
     images=ProductImageSerializer(many=True,read_only=True)
     reviews=ReviewSerializer(read_only=True,many=True)
