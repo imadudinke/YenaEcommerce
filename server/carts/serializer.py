@@ -24,7 +24,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        # Fixed typo: was "total_item" which doesn't exist; should be "total_items" to match SerializerMethodField
+        
         fields = ["items", "total_items", "total_price"]
 
     def get_total_items(self, obj):

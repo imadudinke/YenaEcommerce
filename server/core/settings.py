@@ -29,7 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+CHAPA_SECRET_KEY="CHAPUBK_TEST-OTL3INGy45wYvOzY04EoMw1ODE0UYQM9"
+CHAPA_API_URL = "api.chapa.co"
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     "accounts",
     "products",
     "carts",
+    "order",
+    "home",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",

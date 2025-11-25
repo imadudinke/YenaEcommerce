@@ -35,3 +35,4 @@ class CreateProductReview(generics.CreateAPIView):
             user=self.request.user,
             product_id=product_pk
         )
+
