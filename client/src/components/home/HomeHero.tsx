@@ -1,7 +1,7 @@
 import React from "react";
 // Assuming these imports are correct:
 import { BannerCarousel } from "./BannerCarousel";
-import { CategoryGrid, type Category } from "./CategoryGrid";
+import { type Category } from "./CategoryGrid";
 import { cn } from "@/lib/utils";
 
 interface HomeHeroProps {
