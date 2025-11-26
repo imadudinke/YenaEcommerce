@@ -143,7 +143,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({
             <img
               src={b.image}
               alt={b.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-fit transition-transform duration-1000 group-hover:scale-105"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-black/40" />

@@ -1,13 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  memo,
-  forwardRef,
-  type FormEventHandler,
-  type EventHandler,
-  type FormEvent,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, memo, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { Menu, Search, X } from "lucide-react";
 import { Button } from "../ui/button";
@@ -26,11 +17,7 @@ const CartButton: React.FC = memo(() => (
 ));
 CartButton.displayName = "CartButton";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "outline" | "ghost";
-  size?: "sm" | "md" | "icon";
-  asChild?: boolean;
-}
+// Removed unused ButtonProps interface
 
 interface HeaderProps {
   className?: string;
@@ -44,19 +31,12 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("hee");
-    console.log(query);
+
     if (query.trim()) {
       navigate(`/search?search=${encodeURIComponent(query)}`);
-      setQuery("");
     }
   };
 
-  const navLinks = [
-    { label: "Deals", href: "/deals" },
-    { label: "Featured", href: "/featured" },
-    { label: "New", href: "/new" },
-  ];
   const categories = [
     "Electronics",
     "Fashion",
@@ -136,14 +116,6 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
             />
           </form>
 
-          <nav className="hidden lg:flex items-center gap-3 shrink-0">
-            {navLinks.map((link) => (
-              <Button key={link.href} variant="ghost" size="sm" asChild>
-                <a href={link.href}>{link.label}</a>
-              </Button>
-            ))}
-          </nav>
-
           <CartButton />
 
           {/* Desktop Auth Buttons */}
@@ -172,19 +144,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
             aria-label="Submit search"
             className="inline-flex items-center justify-center rounded-md bg-black text-white px-3 py-2 text-sm hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="h-5 w-5"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.5 3.75a6.75 6.75 0 1 0 4.254 12.015l4.74 4.74a.75.75 0 1 0 1.06-1.06l-4.74-4.74A6.75 6.75 0 0 0 10.5 3.75Zm-5.25 6.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <Search />
           </button>
         </form>
 
@@ -248,20 +208,6 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     <Search />
                   </button>
                 </form>
-
-                <nav className="flex flex-col gap-1 px-4 py-4 border-b">
-                  {navLinks.map((link) => (
-                    <Button
-                      key={link.href}
-                      variant="ghost"
-                      className="justify-start text-base font-medium"
-                      asChild
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <a href={link.href}>{link.label}</a>
-                    </Button>
-                  ))}
-                </nav>
 
                 {/* Categories in Menu */}
                 <div className="px-4 py-4">

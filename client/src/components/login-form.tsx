@@ -8,7 +8,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState, type FormEvent, type FormEventHandler } from "react";
+import { useState, type FormEvent } from "react";
 
 import loginAuth from "@/api/auth";
 

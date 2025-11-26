@@ -71,3 +71,15 @@ export const searchProducts = async (
     return { count: 0, next: null, previous: null, results: [] };
   }
 };
+
+export const ProductDetail = async (id: string) => {
+  const int_id = +id;
+
+  try {
+    const data = await apiFetch(`api/products/${int_id}`);
+    return data;
+  } catch (error) {
+    console.error(`ProductDetail: Failed to fetch data for ID ${id}.`, error);
+    return null;
+  }
+};

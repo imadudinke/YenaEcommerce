@@ -13,7 +13,7 @@ const ProductCard = ({ product }: Props) => {
   return (
     <div className="group rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <Link
-        to={`/product/${product.slug}`}
+        to={`/product/${product.id}`}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         aria-label={`${product.name} details`}
       >
