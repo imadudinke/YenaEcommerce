@@ -2,7 +2,8 @@ import React, { useEffect, useState, memo, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { Menu, Search, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { CategoryListData, type CategoryProps } from "@/api/products";
 
 const cn = (...classes: (string | boolean | undefined | null)[]) =>
   classes.filter(Boolean).join(" ");
@@ -26,7 +27,9 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ className }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const [categoryList, setCategoryList] = useState<CategoryProps[]>([]);
   const navigate = useNavigate();
 
   const handleSearchSubmit = (e: FormEvent) => {
@@ -37,21 +40,19 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
     }
   };
 
-  const categories = [
-    "Electronics",
-    "Fashion",
-    "Home",
-    "Beauty",
-    "Sports",
-    "Books",
-    "Toys",
-    "Grocery",
-    "Hardware",
-    "Furniture",
-  ];
-
   useEffect(() => {
     setIsMounted(true);
+    const fetchCategory = async () => {
+      setIsLoading(true);
+      const data = await CategoryListData();
+      if (data && Array.isArray(data)) {
+        setCategoryList(data);
+      } else {
+        setCategoryList([]);
+      }
+      setIsLoading(false);
+    };
+    fetchCategory();
   }, []);
 
   useEffect(() => {
@@ -95,12 +96,12 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
           </Button>
 
           {/* Logo */}
-          <a
-            href="/"
+          <Link
             className="text-lg sm:text-xl font-extrabold tracking-tight shrink-0"
+            to="/"
           >
             Yena<span className="text-blue-600">Shop</span>
-          </a>
+          </Link>
 
           <form
             onSubmit={handleSearchSubmit}
@@ -149,16 +150,26 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
         </form>
 
         {/* Categories Scroller */}
-        <div className="flex gap-3 overflow-x-auto no-scrollbar text-sm font-medium pb-1">
-          {categories.map((cat) => (
-            <a
-              key={cat}
-              href={`/search?category=${encodeURIComponent(cat)}`}
-              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 whitespace-nowrap transition duration-150 ease-in-out shadow-sm"
-            >
-              {cat}
-            </a>
-          ))}
+        <div className="flex gap-3 overflow-x-auto no-scrollbar text-sm font-medium pb-1 whitespace-nowrap">
+          {isLoading ? (
+            <div className="flex gap-3 animate-pulse">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-8 w-24 bg-gray-200 rounded-lg"></div>
+              ))}
+            </div>
+          ) : (
+            categoryList.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/search?category=${encodeURIComponent(
+                  cat.slug || cat.name
+                )}`}
+                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-blue-500 hover:text-white text-gray-700 transition duration-150 ease-in-out shadow-sm"
+              >
+                {cat.name}
+              </Link>
+            ))
+          )}
         </div>
       </div>
 
@@ -209,22 +220,28 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                   </button>
                 </form>
 
-                {/* Categories in Menu */}
                 <div className="px-4 py-4">
                   <div className="text-xs font-semibold uppercase text-gray-500 mb-3 tracking-wide">
                     Categories
                   </div>
-                  <div className="flex flex-col divide-y border rounded-lg overflow-hidden bg-white">
-                    {categories.map((cat) => (
-                      <a
-                        key={cat}
-                        href={`/search?category=${encodeURIComponent(cat)}`}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="px-4 py-3 text-sm font-medium hover:bg-gray-100 text-gray-700"
-                      >
-                        {cat}
-                      </a>
-                    ))}
+                  <div className="px-4 py-4 flex-1">
+                    <div className="text-xs font-semibold uppercase text-gray-500 mb-3 tracking-wide">
+                      Product Categories
+                    </div>
+                    <div className="flex flex-col divide-y border rounded-lg overflow-hidden bg-white">
+                      {categoryList.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`/search?category=${encodeURIComponent(
+                            cat.slug || cat.name
+                          )}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="px-4 py-3 text-sm font-medium hover:bg-gray-100 text-gray-700"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

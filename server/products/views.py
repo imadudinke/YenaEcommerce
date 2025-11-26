@@ -3,9 +3,9 @@ from rest_framework import generics,filters,permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from accounts.authentication import JWTAuthenticationFromCookie
 from .filter import ProductFilter
-from .models import Product
+from .models import Product,Category
 from .serializers import ProductSerializer
-from products.serializers import ReviewSerializer
+from products.serializers import ReviewSerializer,CategorySerializer
 class ProductListView(generics.ListAPIView):
     queryset=Product.objects.filter(is_active=True).order_by("-id")
     serializer_class=ProductSerializer
@@ -36,3 +36,7 @@ class CreateProductReview(generics.CreateAPIView):
             product_id=product_pk
         )
 
+class CategoryListView(generics.ListAPIView):
+    serializer_class = CategorySerializer
+    queryset=Category.objects.all().order_by("-id")
+    pass
