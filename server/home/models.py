@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Banner(models.Model):
     title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to="banners/")
+    image = models.ImageField(upload_to="assets/img/banners/")
     url = models.URLField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)  # sorting

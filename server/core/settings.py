@@ -154,6 +154,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (user-uploaded)
+MEDIA_URL = '/media/'
+# Store uploads at project root (BASE_DIR) so existing folders like 'product_images/' continue to work
+MEDIA_ROOT = BASE_DIR
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

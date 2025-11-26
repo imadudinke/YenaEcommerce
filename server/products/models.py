@@ -4,7 +4,8 @@ from django.conf import settings
 class Category(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to="category_images/", null=True, blank=True) 
+    # Store new uploads under assets/img with clear grouping
+    image = models.ImageField(upload_to="assets/img/categories/", null=True, blank=True)
 
 
     class Meta:
@@ -34,7 +35,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="product_images/")
+    image = models.ImageField(upload_to="assets/img/products/")
 
     def __str__(self):
         return f"{self.product.name} Image"

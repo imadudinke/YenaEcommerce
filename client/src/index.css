@@ -115,6 +115,91 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Manrope", system-ui, sans-serif;
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Clash Display", "Manrope", system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Glass & Shadow Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/60 dark:bg-white/10 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-sm;
+  }
+  .soft-shadow {
+    box-shadow: 0 4px 24px -2px oklch(0.75 0 0 / 0.25),
+      0 2px 8px -2px oklch(0.75 0 0 / 0.3);
+  }
+  .hover-rise {
+    transition: transform 0.4s cubic-bezier(0.16, 0.8, 0.3, 1), box-shadow 0.4s;
+  }
+  .hover-rise:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px -8px oklch(0.75 0 0 / 0.35);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hover-rise,
+    .hover-rise:hover {
+      transition: none;
+    }
+  }
+}
+
+/* Bento grid layout helpers */
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: dense;
+}
+@media (min-width: 640px) {
+  .bento-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+.span-3 {
+  grid-column: span 3;
+}
+.span-4 {
+  grid-column: span 4;
+}
+.span-6 {
+  grid-column: span 6;
+}
+.span-2 {
+  grid-column: span 2;
+}
+
+/* Smooth fade-in keyframes for micro interactions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fadeIn 0.5s both;
 }

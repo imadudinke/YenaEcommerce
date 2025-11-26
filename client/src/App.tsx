@@ -1,6 +1,14 @@
-import LoginPage from "./Page/LoginPage";
+import {HomePage} from "./Page/HomePage";
+import { Header } from "./components/layout/Header";
+import { Footer } from "./components/layout/Footer";
 
 const App = () => {
-  return <LoginPage />;
+  return (
+    <>
+      <Header />
+      <HomePage />
+      <Footer />
+    </>
+  );
 };
 export default App;

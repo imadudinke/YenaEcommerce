@@ -23,10 +23,11 @@ class HomeAPIView(APIView):
             .order_by('-order_count')[:10]
         )
 
+        context = {"request": request}
         return Response({
-            "banners": BannerSerializer(banners, many=True).data,
-            "featured": SimpleProductSerializer(featured_products, many=True, context={"request": request}).data,
-            "new_arrivals": SimpleProductSerializer(new_arrivals, many=True, context={"request": request}).data,
-            "categories": CategorySerializer(categories, many=True).data,
-            "best_sellers": SimpleProductSerializer(best_sellers, many=True, context={"request": request}).data,
+            "banners": BannerSerializer(banners, many=True, context=context).data,
+            "featured": SimpleProductSerializer(featured_products, many=True, context=context).data,
+            "new_arrivals": SimpleProductSerializer(new_arrivals, many=True, context=context).data,
+            "categories": CategorySerializer(categories, many=True, context=context).data,
+            "best_sellers": SimpleProductSerializer(best_sellers, many=True, context=context).data,
         }, status=status.HTTP_200_OK)
