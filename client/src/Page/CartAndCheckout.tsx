@@ -2,19 +2,29 @@ import {
   type CartData,
   getCartData,
   IncreaseOrDecreaseQuantity,
+  removeFromCart,
 } from "@/api/Cart";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useMemo, useState } from "react";
-import CartLoading from "@/components/cart/CartLoading";
+import { useEffect, useState } from "react";
+import CartLoading from "@/components/layout/CartLoading";
 import EmptyCart from "@/components/cart/EmptyCart";
+import { useCartStore } from "@/store/cartStore";
+import type { Product } from "@/components/home/ProductCard";
 
-const API_BASE = "http://localhost:8000"; // used to render absolute media URLs
+import CartSummery from "@/components/cart/CartSummery";
+import { formatCurrency } from "@/helpers";
+
+const API_BASE = "http://localhost:8000";
 
 const CartAndCheckout = () => {
-  const [cartData, setCartData] = useState<CartData | null>(null);
+  const [_, setCartData] = useState<CartData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const cartItems = useCartStore((state) => state.items);
+  const add = useCartStore((s) => s.add);
+  const remove = useCartStore((s) => s.remove);
+
+  const count = useCartStore((state) => state.count);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -28,64 +38,50 @@ const CartAndCheckout = () => {
     fetchCart();
   }, []);
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(value);
+  const items = cartItems ?? [];
 
-  const toNum = (s: string | null | undefined) => {
-    const n = typeof s === "string" ? parseFloat(s) : 0;
-    return Number.isFinite(n) ? n : 0;
-  };
-  const safeNumber = (v: unknown) => {
-    const n =
-      typeof v === "number" ? v : typeof v === "string" ? parseFloat(v) : 0;
-    return Number.isFinite(n) ? n : 0;
-  };
-
-  const computed = useMemo(() => {
-    const subtotal = safeNumber(cartData?.total_price);
-    const totalItems = safeNumber(cartData?.total_items);
-    const discount = 0;
-    const shipping = 0;
-    const tax = 0;
-    const total = subtotal - discount + shipping + tax;
-    return { subtotal, totalItems, discount, shipping, tax, total };
-  }, [cartData]);
-
-  const updateQuantity = async (id: number, delta: number) => {
-    try {
-      const data = {
-        product_id: String(id),
-        quantity: String(delta),
-      };
-      await IncreaseOrDecreaseQuantity(data);
-      setCartData((prev) => {
-        if (!prev) return prev;
-        const nextItems = prev.items.map((it) =>
-          it.id === id
-            ? { ...it, quantity: Math.max(1, it.quantity + delta) }
-            : it
-        );
-
-        return { ...prev, items: nextItems };
-      });
-    } catch (error) {}
-  };
-
-  const removeItem = (id: number) => {
-    setCartData((prev) =>
-      prev ? { ...prev, items: prev.items.filter((it) => it.id !== id) } : prev
+  const updateQuantity = async (product: Product, delta: number) => {
+    const current = items.find((it) => it.id === product.id);
+    const newQty = Math.max(1, (current?.qty || 1) + delta);
+    add(
+      {
+        id: Number(product.id),
+        name: product.name,
+        price: parseFloat(String(product.price)),
+        image: product.image ?? null,
+      },
+      delta
     );
+    try {
+      await IncreaseOrDecreaseQuantity({
+        product_id: String(product.id),
+        quantity: String(newQty),
+      });
+    } catch (error) {
+      console.error("Failed to update quantity; reverting", error);
+    }
+  };
+
+  const removeItem = async (productId: number) => {
+    remove(productId);
+    try {
+      await removeFromCart({
+        product_id: String(productId),
+      });
+    } catch (error) {
+      console.error("Failed to remove item; refreshing cart", error);
+      try {
+        const data = await getCartData();
+        if (data) setCartData(data);
+      } catch (e) {}
+    }
   };
 
   if (loading) {
     return <CartLoading />;
   }
 
-  if (!cartData || cartData.items.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return <EmptyCart />;
   }
 
@@ -105,7 +101,7 @@ const CartAndCheckout = () => {
             </div>
           </div>
           <span className="ml-auto md:ml-2 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium whitespace-nowrap">
-            {computed.totalItems} item{computed.totalItems !== 1 && "s"}
+            {count()} item{count() !== 1 && "s"}
           </span>
         </div>
         <div className="flex items-center gap-3 justify-between md:justify-end">
@@ -150,22 +146,22 @@ const CartAndCheckout = () => {
           </div>
           <Separator className="hidden md:block" />
 
-          {cartData.items.map((item) => {
-            const price = toNum(item.product.price);
-            const lineTotal = price * item.quantity;
-            const imgSrc = item.product.image
-              ? new URL(item.product.image, API_BASE).toString()
+          {items.map((item) => {
+            const price = +item.price;
+            const lineTotal = price * item.qty;
+            const imgSrc = item.image
+              ? new URL(item.image, API_BASE).toString()
               : "/placeholder-product.svg";
             return (
               <div
-                key={item.product.id}
+                key={item.id}
                 className="grid grid-cols-12 items-center gap-4 rounded-lg border p-4"
               >
                 {/* product */}
                 <div className="col-span-12 md:col-span-6 flex items-center gap-4 min-w-0">
                   <img
                     src={imgSrc}
-                    alt={item.product.name}
+                    alt={item.name}
                     className="size-20 rounded-md object-cover bg-muted"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
@@ -173,13 +169,13 @@ const CartAndCheckout = () => {
                     }}
                   />
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{item.product.name}</p>
+                    <p className="font-medium truncate">{item.name}</p>
                     <p className="text-sm text-muted-foreground">
                       {formatCurrency(price)} each
                     </p>
                     <button
                       className="mt-2 text-xs text-destructive hover:underline"
-                      onClick={() => removeItem(item.product.id)}
+                      onClick={() => removeItem(item.id)}
                     >
                       Remove
                     </button>
@@ -193,19 +189,19 @@ const CartAndCheckout = () => {
                       variant="ghost"
                       size="icon-sm"
                       aria-label="Decrease quantity"
-                      onClick={() => updateQuantity(item.product.id, -1)}
-                      disabled={item.quantity <= 1}
+                      onClick={() => updateQuantity(item, -1)}
+                      disabled={item.qty <= 1}
                     >
                       −
                     </Button>
                     <div className="w-10 text-center text-sm font-medium tabular-nums">
-                      {item.quantity}
+                      {item.qty}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon-sm"
                       aria-label="Increase quantity"
-                      onClick={() => updateQuantity(item.product.id, 1)}
+                      onClick={() => updateQuantity(item, 1)}
                     >
                       +
                     </Button>
@@ -226,81 +222,7 @@ const CartAndCheckout = () => {
           })}
         </div>
 
-        <aside className="lg:col-span-4 lg:sticky top-6 h-fit">
-          <div className="rounded-lg border p-6 space-y-5 soft-shadow">
-            <h2 className="text-lg font-semibold">Order Summary</h2>
-
-            {/* Free shipping progress */}
-            {(() => {
-              const threshold = 100;
-              const remaining = Math.max(0, threshold - computed.subtotal);
-              const pct = Math.min(100, (computed.subtotal / threshold) * 100);
-              return (
-                <div className="rounded-md border p-3 bg-accent">
-                  <p className="text-xs font-medium mb-2">
-                    {remaining > 0
-                      ? `You're ${formatCurrency(
-                          remaining
-                        )} away from free shipping!`
-                      : "You qualified for free shipping!"}
-                  </p>
-                  <div className="h-2 rounded bg-muted">
-                    <div
-                      className="h-2 rounded bg-primary"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Promo code */}
-            <div className="flex gap-2">
-              <Input placeholder="Promo code" aria-label="Promo code" />
-              <Button variant="outline">Apply</Button>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Items</span>
-                <span>{computed?.totalItems}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>{formatCurrency(computed.subtotal)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Discount</span>
-                <span>-{formatCurrency(computed.discount)}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Shipping</span>
-                <span>Calculated at checkout</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Tax</span>
-                <span>Calculated at checkout</span>
-              </div>
-              <div className="h-px bg-border my-2" />
-              <div className="flex justify-between font-medium">
-                <span>Total</span>
-                <span>{formatCurrency(computed.total)}</span>
-              </div>
-            </div>
-
-            <Button className="w-full h-11 md:h-12 text-base">
-              Proceed to Checkout
-            </Button>
-            <Button variant="outline" className="w-full" asChild>
-              <a href="/">Continue Shopping</a>
-            </Button>
-
-            <Separator />
-            <div className="text-xs text-muted-foreground">
-              <p>Secure checkout. We accept major cards.</p>
-            </div>
-          </div>
-        </aside>
+        <CartSummery />
       </div>
     </section>
   );

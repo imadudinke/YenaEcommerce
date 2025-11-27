@@ -54,7 +54,6 @@ class AddToCartView(APIView):
                 cart=cart,
                 product_id=product_id,
             )
-            print("Creating...")
 
             if not created:
                 item.quantity += quantity
@@ -77,26 +76,18 @@ class AddToCartView(APIView):
 
         return Response({f"message": f"Item added to cart (guest) {request.session["cart"] }"}, status=200)
 
-class RemoveCart(APIView):
+class RemoveCartItem(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = [JWTAuthenticationFromCookie]
-    def post(self,request):
+    def delete(self,request):
      product_id=request.data.get("product_id")
-     quantity_to_remove = int(request.data.get("quantity", 1))
-
      if request.user.is_authenticated:
          try:
             cart= get_object_or_404(Cart,user=request.user)
 
             item=get_object_or_404(CartItem,cart=cart,product_id=product_id)
-
-            if item.quantity >quantity_to_remove:
-                item.quantity -=quantity_to_remove
-                item.save()
-                message = f"Item {quantity_to_remove} removed from cart."
-            else:
-                item.delete()
-                message = "Item fully removed from cart."
+            item.delete()
+            message = "Item fully removed from cart."
 
             return Response({"message": message}, status=status.HTTP_200_OK)
          except Cart.DoesNotExist:
@@ -104,26 +95,17 @@ class RemoveCart(APIView):
          except CartItem.DoesNotExist:
                 return Response({"message": "Item not found in cart."}, status=status.HTTP_404_NOT_FOUND)
      else:
-         session_cart = get_session_cart(request)
-         str_product_id = str(product_id)
-
-         if str_product_id in session_cart:
-                current_quantity = session_cart[str_product_id]["quantity"]
-
-                if current_quantity > quantity_to_remove:
-                    
-                    session_cart[str_product_id]["quantity"] -= quantity_to_remove
-                    message = "Item quantity reduced in session cart."
-                else:
-                    
-                    del session_cart[str_product_id]
-                    message = "Item fully removed from session cart."
-
-                save_session_cart(request, session_cart)
-                return Response({"message": message}, status=status.HTTP_200_OK)
+            session_cart = get_session_cart(request)
+            str_product_id = str(product_id)
             
-         else:
-                return Response({"message": "Item not found in session cart."}, status=status.HTTP_404_NOT_FOUND) 
+            if str_product_id in session_cart:
+                del session_cart[str_product_id]
+                message = "Item fully removed from session cart."
+                save_session_cart(request, session_cart)
+                return Response({"message": message}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"message": "Item was already removed or not in cart."}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 
@@ -135,7 +117,6 @@ class IncreaseOrDecreaseNumber(APIView):
     def post(self, request):
         product_id = request.data.get("product_id")
         desired_quantity = int(request.data.get("quantity", 0))
-        print(desired_quantity,product_id)
 
         if not product_id:
             return Response({"error": "product_id is required"}, status=status.HTTP_400_BAD_REQUEST)

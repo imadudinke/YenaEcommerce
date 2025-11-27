@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Eye, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { handleAddToCart } from "@/helpers";
+import { useCartStore } from "@/store/cartStore";
 
 export interface Product {
   id: number;
@@ -22,6 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   className,
   onAddToCart,
 }) => {
+  const add = useCartStore((s) => s.add);
   const price =
     typeof product.price === "number"
       ? product.price.toFixed(2)
@@ -81,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           variant="outline"
           size="sm"
           className="mt-1 w-full"
-          onClick={() => onAddToCart?.(product)}
+          onClick={() => handleAddToCart(product, 1, add)}
         >
           Add to Cart
         </Button>

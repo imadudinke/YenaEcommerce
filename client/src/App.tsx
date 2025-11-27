@@ -5,10 +5,12 @@ import { Route, Routes } from "react-router-dom";
 import ProductDetails from "./Page/ProductDetail";
 import SearchResultPage from "./Page/SearchResultPage";
 import CartAndCheckout from "./Page/CartAndCheckout";
+import { AppInitializer } from "./AppInitializer";
 
 const App = () => {
   return (
     <>
+      <AppInitializer />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

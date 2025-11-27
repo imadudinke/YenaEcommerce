@@ -3,15 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import { ProductDetail } from "@/api/products";
 import type { ProductSearchResult } from "@/api/products";
 import { Button } from "@/components/ui/button";
-// Assuming you have shadcn/ui components or similar
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store/cartStore";
 
-// Placeholder component for visual star ratings
 const StarRating = ({ rating, count }: { rating: number; count: number }) => {
   const fullStars = Math.floor(rating);
   const stars = [];
-  // Use a modern icon library (e.g., Lucide React icons) if available, otherwise use symbols
   for (let i = 0; i < 5; i++) {
     stars.push(
       <span
@@ -35,7 +32,6 @@ const StarRating = ({ rating, count }: { rating: number; count: number }) => {
 const formatPrice = (p: string | number) => {
   const n = typeof p === "number" ? p : parseFloat(p);
   if (Number.isNaN(n)) return "-";
-  // Use Intl.NumberFormat for standard currency display
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

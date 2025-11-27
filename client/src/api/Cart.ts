@@ -19,9 +19,9 @@ export interface CartData {
   total_price: string;
 }
 
-interface dataProps {
+export interface CartPayLoad {
   product_id: string;
-  quantity: string;
+  quantity?: string;
 }
 
 export const getCartData = async (): Promise<CartData | null> => {
@@ -35,7 +35,7 @@ export const getCartData = async (): Promise<CartData | null> => {
   }
 };
 
-export const IncreaseOrDecreaseQuantity = async (data: dataProps) => {
+export const IncreaseOrDecreaseQuantity = async (data: CartPayLoad) => {
   try {
     console.log(data);
     await apiFetch("api/cart/quantity/", {
@@ -47,4 +47,28 @@ export const IncreaseOrDecreaseQuantity = async (data: dataProps) => {
     throw new Error("Could not update item quantity.");
   }
 };
-/* {product_id: '6', quantity: '1'} */
+
+export const removeFromCart = async (data: CartPayLoad) => {
+  try {
+    await apiFetch("api/cart/remove/", {
+      method: "DELETE",
+      body: JSON.stringify(data),
+    });
+    return { message: "Successfully Removed" };
+  } catch (error) {
+    console.error("Failed to remove item from cart:", error);
+    throw new Error("Failed to remove item from cart.");
+  }
+};
+
+export const addToCart = async (data: CartPayLoad) => {
+  try {
+    await apiFetch("api/cart/add/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    console.error("Failed to add item to cart:", error);
+    throw new Error("Could not add item to cart.");
+  }
+};

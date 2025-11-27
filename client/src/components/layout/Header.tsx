@@ -4,21 +4,11 @@ import { Menu, Search, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { CategoryListData, type CategoryProps } from "@/api/products";
+import { useCartStore } from "@/store/cartStore";
+import { CartButton } from "./CartButton";
 
 const cn = (...classes: (string | boolean | undefined | null)[]) =>
   classes.filter(Boolean).join(" ");
-
-const CartButton: React.FC = memo(() => (
-  <button
-    aria-label="View shopping cart"
-    className="p-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 transition shrink-0"
-  >
-    🛒
-  </button>
-));
-CartButton.displayName = "CartButton";
-
-// Removed unused ButtonProps interface
 
 interface HeaderProps {
   className?: string;
