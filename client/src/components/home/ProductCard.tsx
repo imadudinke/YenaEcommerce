@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Eye, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export interface Product {
   id: number;
@@ -60,7 +61,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             aria-label="Quick view"
             className="size-9 rounded-full bg-white/80 backdrop-blur hover:bg-white shadow-sm grid place-content-center"
           >
-            <Eye className="size-4" />
+            <Link to={`/product/${product.id}`}>
+              <Eye className="size-4" />
+            </Link>
           </button>
         </div>
       </div>

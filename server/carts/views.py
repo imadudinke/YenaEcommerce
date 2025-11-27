@@ -135,6 +135,7 @@ class IncreaseOrDecreaseNumber(APIView):
     def post(self, request):
         product_id = request.data.get("product_id")
         desired_quantity = int(request.data.get("quantity", 0))
+        print(desired_quantity,product_id)
 
         if not product_id:
             return Response({"error": "product_id is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -144,7 +145,9 @@ class IncreaseOrDecreaseNumber(APIView):
         if request.user.is_authenticated:
             try:
                 cart = get_object_or_404(Cart, user=request.user)
+              
                 item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+              
 
                 if desired_quantity > 0:
                     item.quantity = desired_quantity

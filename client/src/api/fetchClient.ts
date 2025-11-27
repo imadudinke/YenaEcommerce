@@ -1,56 +1,110 @@
 const BASE_URL = "http://localhost:8000/";
 
-type ApiFetchProps = {
-  url: string;
-  options?: {
-    headers?: {
-      [key: string]: string;
-    };
-    method?: string;
-    body?: string;
-  };
+function getCSRFToken() {
+  const match = document.cookie.match(/csrftoken=([^;]+)/);
+  return match ? match[1] : "";
+}
+
+type FlexibleBody = BodyInit | object;
+
+type ApiFetchOptions = {
+  headers?: HeadersInit;
+  method?: string;
+  body?: FlexibleBody;
 };
 
-const apiFetch = async (
+const apiFetch = async <T = any>(
   url: string,
-  options: ApiFetchProps["options"] = {}
-): Promise<any> => {
+  options: ApiFetchOptions = {}
+): Promise<T> => {
+  const { body, headers, ...restOptions } = options;
+
+  let processedBody: BodyInit | undefined;
+
+  if (body) {
+    if (typeof body === "object" && !("body" in options)) {
+      processedBody = JSON.stringify(body);
+    } else {
+      processedBody = body as BodyInit;
+    }
+  }
+
+  const defaultHeaders = {
+    "Content-Type": "application/json",
+    ...headers,
+  };
+
   try {
-    const res = await fetch(BASE_URL + url, {
-      ...options,
-      headers: { "Content-type": "application/json", ...options.headers },
+    let res = await fetch(BASE_URL + url, {
+      ...restOptions,
+      headers: defaultHeaders,
       credentials: "include",
+      body: processedBody,
     });
 
-    if (res.status === 401) {
-      console.log("Access token expired. Attempting to refresh token...");
-
-      const refreshRes = await fetch(BASE_URL + "/api/token/refresh/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        console.error("Refresh failed. Redirecting to login.");
-        window.location.href = "/login";
-        return Promise.reject(
-          "Session expired or network error during refresh"
+    // ---- HANDLE EXPIRED ACCESS TOKEN: treat 401 or 403 with token errors ----
+    if (res.status === 401 || res.status === 403) {
+      const errBody: any = await res
+        .clone()
+        .json()
+        .catch(() => ({}));
+      const detail = (errBody?.detail || "").toString().toLowerCase();
+      const tokenExpired =
+        detail.includes("token has expired") ||
+        detail.includes("token_not_valid") ||
+        detail.includes("not valid");
+      if (res.status === 401 || tokenExpired) {
+        console.log(
+          "Access token invalid/expired. Attempting cookie refresh..."
         );
-      }
 
-      console.log("Token refreshed. Retrying original request...");
-      return apiFetch(url, options);
+        // Prefer cookie-based refresh endpoint
+        const refreshCookieRes = await fetch(
+          BASE_URL + "api/token/refresh-cookie/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+            },
+            credentials: "include",
+          }
+        );
+
+        if (!refreshCookieRes.ok) {
+          // Fallback to default (will likely fail if refresh is HttpOnly only)
+          const refreshRes = await fetch(BASE_URL + "api/token/refresh/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+            },
+            credentials: "include",
+            body: JSON.stringify({}),
+          });
+
+          if (!refreshRes.ok) {
+            console.error("Refresh failed. Redirecting to login.");
+            window.location.href = "/login";
+            return Promise.reject("Refresh failed");
+          }
+        }
+
+        console.log("Token refreshed. Retrying original request...");
+        return apiFetch<T>(url, options);
+      }
     }
 
     if (!res.ok) {
-      const errorBody = await res.json();
+      const errorBody = await res
+        .json()
+        .catch(() => ({ message: res.statusText }));
       return Promise.reject(errorBody);
     }
 
-    return await res.json();
+    return (await res.json()) as T;
   } catch (error) {
-    console.error("Network or unexpected error during fetch:", error);
+    console.error("Network error:", error);
     return Promise.reject(error);
   }
 };

@@ -24,11 +24,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
-from accounts.Views.token import CustomTokenObtainPairView
+from accounts.Views.token import CustomTokenObtainPairView, CustomTokenRefreshCookieView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh-cookie/', CustomTokenRefreshCookieView.as_view(), name='token_refresh_cookie'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path("api/password_rest/",include("accounts.urls")),
     # 

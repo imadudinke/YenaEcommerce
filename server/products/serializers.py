@@ -12,7 +12,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model=ProductImage
         fields=("id","image")
-    pass
+    
 
 
 class ReviewSerializer(serializers.ModelSerializer):

@@ -3,6 +3,7 @@ import React from "react";
 import { BannerCarousel } from "./BannerCarousel";
 import { type Category } from "./CategoryGrid";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface HomeHeroProps {
   banners: {
@@ -38,10 +39,10 @@ export const HomeHero: React.FC<HomeHeroProps> = ({
           </h3>
           <div className="grid grid-cols-2 gap-2 overflow-y-auto">
             {categories.slice(0, 8).map((c) => (
-              <a
+              <Link
                 key={c.id}
-                href={`/category/${c.slug}`}
                 className="group flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium hover:bg-gray-50 transition duration-150 shadow-sm"
+                to={`/search?category=${c.slug}`}
               >
                 <div className="size-8 rounded-md bg-muted overflow-hidden shrink-0">
                   {c.image ? (
@@ -62,7 +63,7 @@ export const HomeHero: React.FC<HomeHeroProps> = ({
                 >
                   {c.name}
                 </span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>

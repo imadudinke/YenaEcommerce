@@ -3,6 +3,8 @@ from accounts.serializers.token import CustomTokenObtainPairSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from carts.helper import merge_carts
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -44,4 +46,31 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             samesite="Lax"
         )
 
+        return response
+
+
+class CustomTokenRefreshCookieView(APIView):
+    """
+    Issue a new access token from the HttpOnly 'refresh' cookie and set it as an HttpOnly 'access' cookie.
+    """
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get("refresh")
+        if not refresh_token:
+            return Response({"detail": "Refresh token missing"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access = str(refresh.access_token)
+        except Exception:
+            return Response({"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        response = Response({"message": "Token refreshed"}, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key="access",
+            value=access,
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+        )
         return response

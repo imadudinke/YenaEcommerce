@@ -68,7 +68,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({
 
   // --- Effects ---
 
-  // 1. Autoplay logic
+ 
   useEffect(() => {
     setTimer();
     return clearTimer;
@@ -166,7 +166,6 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({
         ))}
       </div>
 
-      {/* Controls (omitted for brevity but remain the same) */}
       {isAutomatic && totalSlides > 1 && (
         <>
           {/* Pause/Play Button */}

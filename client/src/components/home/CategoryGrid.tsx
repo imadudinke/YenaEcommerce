@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export interface Category {
   id: number;
@@ -26,10 +27,10 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       )}
     >
       {categories.map((c) => (
-        <a
+        <Link
           key={c.id}
-          href={`/category/${c.slug}`}
           className="group rounded-lg border bg-card p-3 flex flex-col items-center text-center hover:shadow-md transition-shadow"
+          to={`/search?category=${c.slug}`}
         >
           <div className="size-20 rounded-md overflow-hidden bg-muted mb-2 relative">
             {c.image ? (
@@ -45,8 +46,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             )}
             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
+
           <span className="text-sm font-medium line-clamp-2">{c.name}</span>
-        </a>
+        </Link>
       ))}
     </div>
   );

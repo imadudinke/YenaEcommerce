@@ -1,6 +1,7 @@
 import React from "react";
 import { type Category } from "./CategoryGrid";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface CategoryBentoProps {
   categories: Category[];
@@ -16,9 +17,8 @@ export const CategoryBento: React.FC<CategoryBentoProps> = ({
   const rest = categories.slice(1, 10);
   return (
     <div className={cn("bento-grid", className)}>
-      {/* Primary feature tile */}
-      <a
-        href={`/category/${primary.slug}`}
+      <Link
+        to={`/search?category=${primary.slug}`}
         className="span-6 md:span-6 lg:span-6 relative rounded-xl overflow-hidden glass soft-shadow group flex flex-col justify-end p-5 aspect-[4/3]"
       >
         {primary.image && (
@@ -37,11 +37,11 @@ export const CategoryBento: React.FC<CategoryBentoProps> = ({
           </p>
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
-      </a>
+      </Link>
       {rest.map((c, i) => (
-        <a
+        <Link
           key={c.id}
-          href={`/category/${c.slug}`}
+          to={`/search?category=${c.slug}`}
           className={cn(
             "relative rounded-xl glass overflow-hidden group flex flex-col justify-end p-4 aspect-square",
             i % 3 === 0 ? "span-3" : "span-2"
@@ -60,7 +60,7 @@ export const CategoryBento: React.FC<CategoryBentoProps> = ({
             </h4>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-        </a>
+        </Link>
       ))}
     </div>
   );

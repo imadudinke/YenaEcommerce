@@ -112,7 +112,6 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 md:px-6 py-8">
-        {/* Modern Skeleton Loader */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
           <div className="aspect-square rounded-xl bg-gray-100" />
           <div className="space-y-4">
@@ -148,7 +147,6 @@ const ProductDetails = () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 md:py-12">
-      {/* Breadcrumbs */}
       <nav className="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
         <ol className="flex items-center gap-2 flex-wrap">
           <li>
@@ -160,8 +158,8 @@ const ProductDetails = () => {
           <li>
             <Link
               className="hover:text-gray-700 transition"
-              to={`/search?search=${encodeURIComponent(
-                product.category?.name || ""
+              to={`/search?category=${encodeURIComponent(
+                product.category?.slug || ""
               )}`}
             >
               {product.category?.name || "Category"}
@@ -177,7 +175,6 @@ const ProductDetails = () => {
         </ol>
       </nav>
 
-      {/* Main content grid: Unique asymmetric 60/40 layout */}
       <section className="grid grid-cols-1 lg:grid-cols-6 gap-8 lg:gap-12">
         <div className="lg:col-span-3 flex flex-col gap-4">
           <div className="relative aspect-square w-full overflow-hidden rounded-xl shadow-lg border bg-white">
@@ -218,7 +215,6 @@ const ProductDetails = () => {
           )}
         </div>
 
-        {/* Details & Actions (Right 40%) - Made sticky on desktop */}
         <div className="lg:col-span-2 flex flex-col gap-6 lg:sticky lg:top-8 lg:self-start">
           <div className="space-y-4">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">

@@ -1,12 +1,22 @@
 from rest_framework import serializers
 from .models import CartItem,Cart
-from products.models import Product
+from products.models import Product,ProductImage
 from .models import CartItem, Cart
 
 class ProductMiniSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Product
-        fields = ("id", "name", "price")
+        fields = ("id", "name", "price", "image")
+
+    def get_image(self, obj):
+        first_image = obj.images.first()
+        if first_image:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(first_image.image.url)
+            return first_image.image.url
+        return None
 
 
 class CartItemSerializer(serializers.ModelSerializer):
