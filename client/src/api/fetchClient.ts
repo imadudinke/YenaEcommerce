@@ -42,7 +42,6 @@ const apiFetch = async <T = any>(
       body: processedBody,
     });
 
-    // ---- HANDLE EXPIRED ACCESS TOKEN: treat 401 or 403 with token errors ----
     if (res.status === 401 || res.status === 403) {
       const errBody: any = await res
         .clone()

@@ -30,7 +30,7 @@ export interface HomeDataResponse {
 
 export const getHomeData = async (): Promise<HomeDataResponse | null> => {
   try {
-    return await apiFetch("/api/home/");
+    return await apiFetch("api/home/");
   } catch (err) {
     console.error("Failed to fetch home data", err);
     return null;

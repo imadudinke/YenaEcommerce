@@ -1,11 +1,21 @@
 import React, { useEffect, useState, memo, type FormEvent } from "react";
 import { createPortal } from "react-dom";
-import { Menu, Search, X } from "lucide-react";
+import {
+  LogIn,
+  LogOut,
+  Menu,
+  Search,
+  ShoppingCart,
+  User,
+  UserPlus,
+  X,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { CategoryListData, type CategoryProps } from "@/api/products";
 import { useCartStore } from "@/store/cartStore";
 import { CartButton } from "./CartButton";
+import { useAuthStore } from "@/store/authStore";
 
 const cn = (...classes: (string | boolean | undefined | null)[]) =>
   classes.filter(Boolean).join(" ");
@@ -20,6 +30,8 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [categoryList, setCategoryList] = useState<CategoryProps[]>([]);
+  // Mobile account dropdown toggle inside portal
+  const [userMenuOpenMobile, setUserMenuOpenMobile] = useState(false);
   const navigate = useNavigate();
 
   const handleSearchSubmit = (e: FormEvent) => {
@@ -62,6 +74,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  const activeUser = useAuthStore((s) => s.user);
   return (
     <header
       className={cn(
@@ -109,18 +122,80 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
 
           <CartButton />
 
-          {/* Desktop Auth Buttons */}
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
-            <Button variant="outline" size="sm" asChild>
-              <a href="/login">Sign In</a>
-            </Button>
-            <Button size="sm" asChild>
-              <a href="/register">Register</a>
-            </Button>
+          <div className="hidden sm:flex items-center gap-4 shrink-0">
+            {activeUser ? (
+              // User is logged in: Display avatar, name, and a sophisticated dropdown
+              <div className="relative group">
+                <button
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="User Profile Menu"
+                >
+                  {activeUser.avatar ? (
+                    <img
+                      src={activeUser.avatar}
+                      alt={activeUser.full_name}
+                      className="w-9 h-9 rounded-full object-cover border-2 border-gray-100 shadow-md"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold border border-gray-200">
+                      {activeUser.full_name?.[0] || "U"}
+                    </div>
+                  )}
+                  <span className="font-medium text-gray-800 truncate max-w-[150px] hidden md:inline">
+                    {activeUser.full_name}
+                  </span>
+                </button>
+
+                {/* Dropdown Menu (on hover) */}
+                <div className="absolute right-0 top-full mt-2 z-50 opacity-0 group-hover:opacity-100 group-hover:visible translate-y-1 group-hover:translate-y-0 transition-all duration-200 ease-out min-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl p-1">
+                  <a
+                    href="/profile"
+                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                  >
+                    <User className="w-4 h-4 text-gray-500" />
+                    Profile Settings
+                  </a>
+                  <a
+                    href="/orders"
+                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                  >
+                    <ShoppingCart className="w-4 h-4 text-gray-500" />
+                    My Orders
+                  </a>
+                  <div className="border-t border-gray-100 my-1"></div>
+                  <button
+                    // onClick={onLogout}
+                    className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
+                  >
+                    <LogOut className="w-4 h-4 text-red-500" />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex-1"
+                >
+                  <a href="/login">Sign In</a>
+                </Button>
+                <Button
+                  size="sm"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex-1"
+                >
+                  <a href="/register">Register</a>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Mobile Search Bar */}
         <form onSubmit={handleSearchSubmit} className="sm:hidden flex gap-2">
           <input
             type="text"
@@ -167,7 +242,6 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
       {isMounted && isMenuOpen
         ? createPortal(
             <div className="lg:hidden">
-              {/* Overlay Backdrop */}
               <div
                 className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
                 onClick={() => setIsMenuOpen(false)}
@@ -240,25 +314,87 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                   <div className="text-xs font-semibold uppercase text-gray-500 mb-3 tracking-wide">
                     Account
                   </div>
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex-1"
-                    >
-                      <a href="/login">Sign In</a>
-                    </Button>
-                    <Button
-                      size="sm"
-                      asChild
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex-1"
-                    >
-                      <a href="/register">Register</a>
-                    </Button>
-                  </div>
+                  {activeUser ? (
+                    // Mobile: tap avatar to toggle dropdown that pops upward
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        aria-label="User Profile Menu"
+                        aria-haspopup="menu"
+                        aria-expanded={userMenuOpenMobile}
+                        onClick={() => setUserMenuOpenMobile((v) => !v)}
+                      >
+                        {activeUser.avatar ? (
+                          <img
+                            src={activeUser.avatar}
+                            alt={activeUser.full_name}
+                            className="w-9 h-9 rounded-full object-cover border-2 border-gray-100 shadow-md"
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold border border-gray-200">
+                            {activeUser.full_name?.[0] || "U"}
+                          </div>
+                        )}
+                        <span className="font-medium text-gray-800 truncate max-w-[180px]">
+                          {activeUser.full_name}
+                        </span>
+                      </button>
+
+                      {userMenuOpenMobile && (
+                        <div className="absolute right-0 bottom-full mt-2 z-50 min-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl p-1 animate-fade-in">
+                          <a
+                            href="/profile"
+                            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <User className="w-4 h-4 text-gray-500" />
+                            Profile Settings
+                          </a>
+                          <a
+                            href="/orders"
+                            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <ShoppingCart className="w-4 h-4 text-gray-500" />
+                            My Orders
+                          </a>
+                          <div className="border-t border-gray-100 my-1"></div>
+                          <button
+                            className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
+                            onClick={() => {
+                              // TODO: wire logout
+                              setUserMenuOpenMobile(false);
+                              setIsMenuOpen(false);
+                            }}
+                          >
+                            <LogOut className="w-4 h-4 text-red-500" />
+                            Logout
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex-1"
+                      >
+                        <a href="/login">Sign In</a>
+                      </Button>
+                      <Button
+                        size="sm"
+                        asChild
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex-1"
+                      >
+                        <a href="/register">Register</a>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>,

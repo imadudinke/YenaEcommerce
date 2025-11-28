@@ -59,7 +59,7 @@ const CartSummery = () => {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Items</span>
-            <span>{count()}</span>
+            <span>{computed.totalItems()}</span>
           </div>
           <div className="flex justify-between">
             <span>Subtotal</span>

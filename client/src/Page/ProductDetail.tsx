@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ProductDetail } from "@/api/products";
 import type { ProductSearchResult } from "@/api/products";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store/cartStore";
+import { handleAddToCart } from "@/helpers";
+import ReviewSection from "@/components/review/ReviewSection";
 
 const StarRating = ({ rating, count }: { rating: number; count: number }) => {
   const fullStars = Math.floor(rating);
@@ -46,7 +48,7 @@ const ProductDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     let active = true;
     (async () => {
@@ -91,19 +93,6 @@ const ProductDetails = () => {
       ratings.reduce((s: number, n: number) => s + n, 0) / ratings.length;
     return { avg, count: reviews.length };
   }, [product]);
-
-  const handleAddToCart = () => {
-    if (!product || !inStock) return;
-    add(
-      {
-        id: product.id,
-        name: product.name,
-        price: parseFloat(String(product.price)),
-        image: product.image,
-      },
-      qty
-    );
-  };
 
   if (loading) {
     return (
@@ -293,7 +282,10 @@ const ProductDetails = () => {
             </div>
 
             <Button
-              onClick={handleAddToCart}
+              onClick={() => {
+                handleAddToCart(product, qty, add);
+                navigate("/");
+              }}
               disabled={!inStock}
               className="flex-1 text-lg py-3 rounded-lg shadow-md bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 transition"
             >
@@ -303,14 +295,7 @@ const ProductDetails = () => {
         </div>
       </section>
 
-      <section className="mt-16 pt-8 border-t border-gray-200">
-        <h2 className="text-2xl font-semibold mb-4">Customer Reviews</h2>
-
-        <p className="text-gray-500">
-          Full review section would go here, providing social proof to build
-          trust.
-        </p>
-      </section>
+      <ReviewSection reviews={product?.reviews} />
     </main>
   );
 };

@@ -14,6 +14,7 @@ import type { Product } from "@/components/home/ProductCard";
 
 import CartSummery from "@/components/cart/CartSummery";
 import { formatCurrency } from "@/helpers";
+import { Link } from "react-router-dom";
 
 const API_BASE = "http://localhost:8000";
 
@@ -129,9 +130,9 @@ const CartAndCheckout = () => {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <a href="/" aria-label="Back to homepage">
+            <Link to="/" aria-label="Back to homepage">
               Home
-            </a>
+            </Link>
           </Button>
         </div>
       </div>
