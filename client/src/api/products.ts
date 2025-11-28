@@ -134,3 +134,23 @@ export const SearchByCategory = async (
     return { count: 0, next: null, previous: null, results: [] };
   }
 };
+
+export const ProductReviewAdd = async (
+  product_id: number,
+  rating: number,
+  comment: string
+) => {
+  const reviewData = {
+    rating,
+    comment,
+  };
+  try {
+    await apiFetch(`api/products/${product_id}/review/`, {
+      method: "POST",
+      body: JSON.stringify(reviewData),
+    });
+  } catch (error) {
+    console.error("Failed to submit product review:", error);
+    throw new Error("Could not add review. Please log in and try again.");
+  }
+};

@@ -1,19 +1,9 @@
-import React, { useEffect, useState, memo, type FormEvent } from "react";
+import React, { useEffect, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
-import {
-  LogIn,
-  LogOut,
-  Menu,
-  Search,
-  ShoppingCart,
-  User,
-  UserPlus,
-  X,
-} from "lucide-react";
+import { LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { CategoryListData, type CategoryProps } from "@/api/products";
-import { useCartStore } from "@/store/cartStore";
 import { CartButton } from "./CartButton";
 import { useAuthStore } from "@/store/authStore";
 
@@ -30,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [categoryList, setCategoryList] = useState<CategoryProps[]>([]);
-  // Mobile account dropdown toggle inside portal
+  const [userMenuOpenDesktop, setUserMenuOpenDesktop] = useState(false);
   const [userMenuOpenMobile, setUserMenuOpenMobile] = useState(false);
   const navigate = useNavigate();
 
@@ -125,10 +115,13 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
           <div className="hidden sm:flex items-center gap-4 shrink-0">
             {activeUser ? (
               // User is logged in: Display avatar, name, and a sophisticated dropdown
-              <div className="relative group">
+              <div className="relative">
                 <button
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   aria-label="User Profile Menu"
+                  onClick={() => setUserMenuOpenDesktop((v) => !v)}
+                  aria-haspopup="menu"
+                  aria-expanded={userMenuOpenDesktop}
                 >
                   {activeUser.avatar ? (
                     <img
@@ -145,32 +138,33 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     {activeUser.full_name}
                   </span>
                 </button>
-
-                {/* Dropdown Menu (on hover) */}
-                <div className="absolute right-0 top-full mt-2 z-50 opacity-0 group-hover:opacity-100 group-hover:visible translate-y-1 group-hover:translate-y-0 transition-all duration-200 ease-out min-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl p-1">
-                  <a
-                    href="/profile"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
-                  >
-                    <User className="w-4 h-4 text-gray-500" />
-                    Profile Settings
-                  </a>
-                  <a
-                    href="/orders"
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
-                  >
-                    <ShoppingCart className="w-4 h-4 text-gray-500" />
-                    My Orders
-                  </a>
-                  <div className="border-t border-gray-100 my-1"></div>
-                  <button
-                    // onClick={onLogout}
-                    className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
-                  >
-                    <LogOut className="w-4 h-4 text-red-500" />
-                    Logout
-                  </button>
-                </div>
+                {/* Dropdown Menu (click to open) */}
+                {userMenuOpenDesktop && (
+                  <div className="absolute right-0 top-full mt-2 z-50 min-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl p-1 animate-fade-in">
+                    <a
+                      href="/profile"
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                    >
+                      <User className="w-4 h-4 text-gray-500" />
+                      Profile Settings
+                    </a>
+                    <a
+                      href="/orders"
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
+                    >
+                      <ShoppingCart className="w-4 h-4 text-gray-500" />
+                      My Orders
+                    </a>
+                    <div className="border-t border-gray-100 my-1"></div>
+                    <button
+                      // onClick={onLogout}
+                      className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
+                    >
+                      <LogOut className="w-4 h-4 text-red-500" />
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex gap-3">

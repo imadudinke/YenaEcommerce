@@ -295,7 +295,7 @@ const ProductDetails = () => {
         </div>
       </section>
 
-      <ReviewSection reviews={product?.reviews} />
+      <ReviewSection reviews={product?.reviews} productId={product?.id} />
     </main>
   );
 };

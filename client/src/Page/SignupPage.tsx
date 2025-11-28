@@ -1,8 +1,8 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import { Link } from "react-router-dom";
-import { LoginForm } from "@/components/login-form";
+import { SignupForm } from "@/components/signup-form";
 
-const LoginPage = () => {
+export default function SignupPage() {
   return (
     <div className="relative min-h-screen bg-gray-50">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.15),transparent_60%)]" />
@@ -25,10 +25,11 @@ const LoginPage = () => {
             </Link>
 
             <div className="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl p-8">
-              <LoginForm />
+              <SignupForm />
             </div>
           </div>
 
+          {/* Visual side with overlay copy */}
           <div className="relative hidden lg:block h-[560px] rounded-3xl overflow-hidden border bg-gray-100 shadow-2xl">
             <img
               src="/YenaShopLogo2.jpg"
@@ -38,24 +39,24 @@ const LoginPage = () => {
             <div className="absolute inset-0 bg-black/30" />
             <div className="relative z-10 h-full w-full p-10 flex flex-col justify-end text-white">
               <h2 className="text-3xl font-bold leading-tight">
-                Welcome back to better shopping
+                Create your free account
               </h2>
               <p className="mt-2 text-sm text-gray-100/90 max-w-md">
-                Access your orders, wishlists, and personalized deals—fast and
-                secure.
+                Track orders, save wishlists, and get early access to
+                member-only drops.
               </p>
               <ul className="mt-4 space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-300" />{" "}
-                  Secure checkout & order history
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-300" /> Save
-                  items to wishlist
+                  Personalized recommendations
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-300" />{" "}
-                  Member-only offers
+                  Faster, secure checkout
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-300" />{" "}
+                  Exclusive deals & perks
                 </li>
               </ul>
             </div>
@@ -64,6 +65,4 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}
