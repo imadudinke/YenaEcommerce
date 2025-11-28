@@ -8,6 +8,7 @@ import CartAndCheckout from "./Page/CartAndCheckout";
 import { AppInitializer } from "./AppInitializer";
 import LoginPage from "./Page/LoginPage";
 import SignupPage from "./Page/SignupPage";
+import { ToastProvider } from "@/components/ui/toast";
 
 const MainLayout = () => {
   return (
@@ -23,7 +24,7 @@ const MainLayout = () => {
 
 const App = () => {
   return (
-    <>
+    <ToastProvider>
       <AppInitializer />
 
       <Routes>
@@ -37,7 +38,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
       </Routes>
-    </>
+    </ToastProvider>
   );
 };
 

@@ -1,6 +1,14 @@
+import { create } from "zustand";
 import { useAuthStore } from "@/store/authStore";
 import apiFetch from "./fetchClient";
+import { useCartStore } from "@/store/cartStore";
 
+interface NewUserProps {
+  email: string;
+  password: string;
+  password2: string;
+  full_name: string;
+}
 export interface ApiUser {
   id: string;
   email: string;
@@ -15,10 +23,24 @@ const loginAuth = async (email: string, password: string) => {
       body: JSON.stringify({ email, password }),
     });
 
-    useAuthStore.getState().setUser(data);
+    useAuthStore.getState().setUser(data.user);
     return data;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const logoutAuth = async () => {
+  try {
+    await apiFetch("api/auth/logout/", {
+      method: "POST",
+    });
+    useAuthStore.getState().logout();
+    useCartStore.getState().clear();
+  } catch (error) {
+    console.error("Error during logout:", error);
+    useAuthStore.getState().logout();
+    useCartStore.getState().clear();
   }
 };
 
@@ -27,8 +49,19 @@ export const getCurrentUser = async (): Promise<ApiUser | null> => {
     const data = await apiFetch<ApiUser>("api/auth/user/");
     return data;
   } catch (error) {
-    console.error("Error fetching current user:", error);
     return null;
+  }
+};
+
+export const createUser = async (newUser: NewUserProps) => {
+  try {
+    const data = await apiFetch("api/auth/user/create/", {
+      method: "POST",
+      body: JSON.stringify(newUser),
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
   }
 };
 

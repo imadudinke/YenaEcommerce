@@ -29,7 +29,6 @@ export default function SignupPage() {
             </div>
           </div>
 
-          {/* Visual side with overlay copy */}
           <div className="relative hidden lg:block h-[560px] rounded-3xl overflow-hidden border bg-gray-100 shadow-2xl">
             <img
               src="/YenaShopLogo2.jpg"

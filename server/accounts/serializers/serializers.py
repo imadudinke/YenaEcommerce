@@ -30,10 +30,23 @@ class RegisterSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email already Exists" )
         return value
-    def validate(self,attrs):
-        if attrs["password"]!= attrs["password2"]:
+    def validate(self, attrs):
+       
+        password = attrs.get("password")
+        password2 = attrs.get("password2")
+        if password != password2:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
-        validate_password(attrs["password"],user=User(**attrs))
+
+        temp_user = User(
+            email=attrs.get("email"),
+            full_name=attrs.get("full_name"),
+        )
+        try:
+            validate_password(password, user=temp_user)
+        except serializers.ValidationError as e: 
+            raise e
+        except Exception as e:
+            raise serializers.ValidationError({"password": str(e)})
         return attrs
     
     @transaction.atomic

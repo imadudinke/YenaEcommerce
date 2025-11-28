@@ -2,6 +2,7 @@ import React, { useEffect, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { logoutAuth } from "@/api/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { CategoryListData, type CategoryProps } from "@/api/products";
 import { CartButton } from "./CartButton";
@@ -114,7 +115,6 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
 
           <div className="hidden sm:flex items-center gap-4 shrink-0">
             {activeUser ? (
-              // User is logged in: Display avatar, name, and a sophisticated dropdown
               <div className="relative">
                 <button
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -157,7 +157,10 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                     </a>
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
-                      // onClick={onLogout}
+                      onClick={async () => {
+                        await logoutAuth();
+                        setUserMenuOpenDesktop(false);
+                      }}
                       className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
                     >
                       <LogOut className="w-4 h-4 text-red-500" />
@@ -175,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                   onClick={() => setIsMenuOpen(false)}
                   className="flex-1"
                 >
-                  <a href="/login">Sign In</a>
+                  <Link to="/login">Sign In</Link>
                 </Button>
                 <Button
                   size="sm"
@@ -183,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                   onClick={() => setIsMenuOpen(false)}
                   className="flex-1"
                 >
-                  <a href="/register">Register</a>
+                  <Link to="/register">Register</Link>
                 </Button>
               </div>
             )}
@@ -356,8 +359,8 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                           <div className="border-t border-gray-100 my-1"></div>
                           <button
                             className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
-                            onClick={() => {
-                              // TODO: wire logout
+                            onClick={async () => {
+                              await logoutAuth();
                               setUserMenuOpenMobile(false);
                               setIsMenuOpen(false);
                             }}

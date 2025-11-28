@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useState, type FormEvent } from "react";
 
 import loginAuth from "@/api/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function LoginForm({
   className,
@@ -19,8 +19,9 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const redirect = useNavigate();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -28,6 +29,7 @@ export function LoginForm({
     try {
       await loginAuth(email, password);
       console.log("Login successful! Redirecting...");
+      redirect("/");
     } catch (err) {
       setError("Login failed. Check your credentials.");
       console.error(err);

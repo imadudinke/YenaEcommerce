@@ -6,8 +6,8 @@ export const AppInitializer = () => {
   const fetchCart = useCartStore((state) => state.fetchCart);
   const checkAuthStatus = useAuthStore((s) => s.checkAuthStatus);
   useEffect(() => {
-    fetchCart();
     checkAuthStatus();
+    fetchCart();
   }, [fetchCart]);
   return null;
 };
