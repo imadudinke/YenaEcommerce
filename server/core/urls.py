@@ -54,7 +54,7 @@ urlpatterns = [
     path("api/products/",include("products.urls")),
     # 
     path("api/cart/",include("carts.urls")),
-    path("api/products/",include("order.urls")),
+    path("api/payment/",include("order.urls")),
     path("api/home/",include("home.urls"))
 
 ]

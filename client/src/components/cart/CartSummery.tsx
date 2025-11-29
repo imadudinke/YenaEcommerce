@@ -83,10 +83,11 @@ const CartSummery = () => {
             <span>{formatCurrency(computed.total)}</span>
           </div>
         </div>
-
-        <Button className="w-full h-11 md:h-12 text-base">
-          Proceed to Checkout
-        </Button>
+        <Link to="/order">
+          <Button className="w-full h-11 md:h-12 text-base">
+            Proceed to Checkout
+          </Button>
+        </Link>
         <Button variant="outline" className="w-full" asChild>
           <Link to="/">Continue Shopping</Link>
         </Button>

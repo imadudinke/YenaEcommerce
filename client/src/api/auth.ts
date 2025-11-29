@@ -1,4 +1,3 @@
-import { create } from "zustand";
 import { useAuthStore } from "@/store/authStore";
 import apiFetch from "./fetchClient";
 import { useCartStore } from "@/store/cartStore";

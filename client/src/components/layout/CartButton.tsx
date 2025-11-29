@@ -1,5 +1,4 @@
 import React from "react";
-import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";

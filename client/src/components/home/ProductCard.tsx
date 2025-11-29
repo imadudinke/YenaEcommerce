@@ -22,7 +22,6 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   className,
-  onAddToCart,
 }) => {
   const add = useCartStore((s) => s.add);
   const price =
@@ -51,7 +50,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="h-full w-full object-contain p-6 opacity-70"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         {/* Quick actions */}
         <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button

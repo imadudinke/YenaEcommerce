@@ -22,6 +22,8 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
     status = models.CharField(max_length=50, default="pending")
+    transaction_reference = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -38,3 +40,14 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (Order #{self.order.id})"
 
+
+class PendingPayment(models.Model):
+    transaction_reference = models.CharField(max_length=100, unique=True, primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    order_details = models.JSONField() 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Pending order {self.transaction_reference} for {self.user.email}"
