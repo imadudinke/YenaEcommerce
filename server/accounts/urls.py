@@ -3,7 +3,7 @@ from .Views.password_rest import PasswordResetRequestView, PasswordResetConfirmV
 from .Views.views import CurrentUserView
 urlpatterns = [
    
-    path("password_rest/", PasswordResetRequestView.as_view(), name="password_reset_request"),
-    path("password_rest/<uid>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path("", PasswordResetRequestView.as_view(), name="password_reset_request"),
+    path("<uid>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
    
 ]

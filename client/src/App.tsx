@@ -12,6 +12,8 @@ import { ToastProvider } from "@/components/ui/toast";
 import OrderAddressPage from "./Page/OrderAdressPage";
 import PaymentSuccessPage from "./Page/PaymentSuccessPage";
 import TrackOrderPage from "./Page/TrackOrder";
+import NotFoundPage from "./Page/NotFoundPage";
+import { Toaster } from "./components/ui/sonner";
 
 const MainLayout = () => {
   return (
@@ -33,7 +35,7 @@ const App = () => {
   return (
     <ToastProvider>
       <AppInitializer />
-
+      <Toaster />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -42,11 +44,14 @@ const App = () => {
           <Route path="/cart" element={<CartAndCheckout />} />
           <Route path="/order" element={<OrderAddressPage />} />
           <Route path="/orders/track" element={<TrackOrderPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/register" element={<SignupPage />} />
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
+        {/* Fallback for any route not matched above (outside MainLayout) */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ToastProvider>
   );

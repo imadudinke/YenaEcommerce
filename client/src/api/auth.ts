@@ -65,3 +65,18 @@ export const createUser = async (newUser: NewUserProps) => {
 };
 
 export default loginAuth;
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const res = await fetch("http://localhost:8000/api/password_rest/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email }),
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+  }
+};

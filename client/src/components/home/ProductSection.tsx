@@ -1,7 +1,7 @@
 import React from "react";
 import { ProductCard, type Product } from "./ProductCard";
 import { HorizontalScroller } from "./HorizontalScroller";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button"; // removed unused import
 import { cn } from "@/lib/utils";
 
 interface ProductSectionProps {
@@ -17,7 +17,7 @@ export const ProductSection: React.FC<ProductSectionProps> = ({
   title,
   products,
   layout = "grid",
-  actionHref,
+  // actionHref,
   className,
   onAddToCart,
 }) => {
@@ -44,11 +44,6 @@ export const ProductSection: React.FC<ProductSectionProps> = ({
         <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
           {title}
         </h2>
-        {actionHref && (
-          <Button asChild variant="link" size="sm">
-            <a href={actionHref}>View All</a>
-          </Button>
-        )}
       </div>
       {content}
     </section>

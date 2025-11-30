@@ -71,7 +71,6 @@ const apiFetch = async <T = any>(
         );
 
         if (!refreshCookieRes.ok) {
-          // Fallback to default (will likely fail if refresh is HttpOnly only)
           const refreshRes = await fetch(BASE_URL + "api/token/refresh/", {
             method: "POST",
             headers: {

@@ -136,9 +136,6 @@ export const HomePage = () => {
             <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
               Discover More
             </h2>
-            <Button variant="link" size="sm" asChild>
-              <a href="/categories">Browse All</a>
-            </Button>
           </div>
           {/* CategoryBento handles complex responsive layout */}
           <CategoryBento categories={categories} />

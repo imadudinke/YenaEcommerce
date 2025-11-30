@@ -75,12 +75,12 @@ export const HomeHero: React.FC<HomeHeroProps> = ({
               Unlock member-only discounts & priority access.
             </p>
           </div>
-          <a
-            href="/register"
+          <Link
+            to="/register"
             className="mt-4 inline-flex items-center justify-center rounded-lg bg-white text-blue-600 text-sm font-bold px-4 py-2.5 hover:bg-gray-100 transition duration-150 shadow-md"
           >
             Create Account
-          </a>
+          </Link>
         </div>
       </aside>
     </section>

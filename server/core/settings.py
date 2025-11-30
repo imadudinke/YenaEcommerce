@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
 CHAPA_CALLBACK_URL = os.getenv("CHAPA_CALLBACK_URL")
 CHAPA_RETURN_URL = os.getenv("CHAPA_RETURN_URL")
+MAILERSEND_API_KEY = os.getenv("MAILERSEND_API_KEY")
 
 
 # Application definition
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",
+    "anymail"
 
 ]
 
@@ -177,3 +179,9 @@ REST_FRAMEWORK={
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
+
+EMAIL_BACKEND = "anymail.backends.mailersend.EmailBackend"
+ANYMAIL = {
+    "MAILERSEND_API_TOKEN": MAILERSEND_API_KEY,
+}
+DEFAULT_FROM_EMAIL = "imadudinkeremu@gmail.com"

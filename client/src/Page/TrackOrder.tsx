@@ -242,7 +242,7 @@ const TrackOrderPage = () => {
                   <div className="flex items-center gap-2">
                     {paidBadge}
                     <p className="text-xs text-gray-500">
-                      Ref: {o.transaction_reference.substring(0, 15)}...
+                      Ref: {o.transaction_reference?.substring(0, 15)}...
                     </p>
                   </div>
                   <button

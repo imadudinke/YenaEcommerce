@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/login-form";
 
 const LoginPage = () => {
   return (
-    <div className="relative min-h-screen bg-gray-50">
+    <div className="relative min-h-screen overflow-hidden bg-gray-50">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.15),transparent_60%)]" />
       <div className="pointer-events-none absolute -left-10 top-20 h-40 w-40 rounded-full bg-blue-100 blur-2xl opacity-50" />
       <div className="pointer-events-none absolute -right-10 top-40 h-40 w-40 rounded-full bg-indigo-100 blur-2xl opacity-50" />
