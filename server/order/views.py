@@ -1,13 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from carts.models import Cart,CartItem
-from .serializer import OrderAddressSerializer
+from .serializer import OrderAddressSerializer,OrderSerializer
 from carts.serializer import CartSerializer 
 from .models import OrderAddress,Order, OrderItem,PendingPayment
 import uuid
@@ -116,6 +116,7 @@ class InitiatePaymentView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class PaymentCallbackView(APIView):
+
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
@@ -207,3 +208,13 @@ class PaymentCallbackView(APIView):
                 {"error": f"Order save failed: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+# 
+
+class ListOrderView(APIView):
+    serializer_class=OrderSerializer
+    def get(self,request):
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+        serializer = self.serializer_class(orders, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -11,6 +11,7 @@ import SignupPage from "./Page/SignupPage";
 import { ToastProvider } from "@/components/ui/toast";
 import OrderAddressPage from "./Page/OrderAdressPage";
 import PaymentSuccessPage from "./Page/PaymentSuccessPage";
+import TrackOrderPage from "./Page/TrackOrder";
 
 const MainLayout = () => {
   return (
@@ -23,8 +24,10 @@ const MainLayout = () => {
     </div>
   );
 };
-interface Window {
-  ChapaCheckout?: any;
+declare global {
+  interface Window {
+    ChapaCheckout?: any;
+  }
 }
 const App = () => {
   return (
@@ -38,6 +41,7 @@ const App = () => {
           <Route path="/search" element={<SearchResultPage />} />
           <Route path="/cart" element={<CartAndCheckout />} />
           <Route path="/order" element={<OrderAddressPage />} />
+          <Route path="/orders/track" element={<TrackOrderPage />} />
         </Route>
 
         <Route path="/login" element={<LoginPage />} />

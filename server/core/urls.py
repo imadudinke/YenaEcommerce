@@ -28,13 +28,19 @@ from accounts.Views.token import CustomTokenObtainPairView, CustomTokenRefreshCo
 import importlib
 
 AUTH_URLS_MODULE = None
+ORDER_URLS_MODULE=None
 try:
     importlib.import_module("accounts.urls_auth")
+    importlib.import_module("order.url_order")
     AUTH_URLS_MODULE = "accounts.urls_auth"
+    ORDER_URLS_MODULE = "order.url_order"
+   
 except ModuleNotFoundError:
     try:
         importlib.import_module("server.accounts.urls_auth")
+        importlib.import_module("order.url_order")
         AUTH_URLS_MODULE = "server.accounts.urls_auth"
+        ORDER_URLS_MODULE = "order.url_order"
     except ModuleNotFoundError:
         AUTH_URLS_MODULE = None
 urlpatterns = [
@@ -47,6 +53,11 @@ urlpatterns = [
     *(
         [path("api/auth/", include(AUTH_URLS_MODULE))]
         if AUTH_URLS_MODULE
+        else []
+    ),
+     *(
+        [path("api/", include(ORDER_URLS_MODULE))]
+        if ORDER_URLS_MODULE
         else []
     ),
     path("api/password_rest/", include("accounts.urls")),

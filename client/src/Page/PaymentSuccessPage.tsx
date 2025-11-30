@@ -34,7 +34,6 @@ const PaymentSuccessPage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          {/* Order summary placeholder */}
           <div className="rounded-xl border bg-secondary/50 p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -55,7 +54,7 @@ const PaymentSuccessPage: React.FC = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
-              to="/order"
+              to="/orders/track"
               className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90"
               aria-label="View order details"
             >

@@ -20,6 +20,10 @@ const CheckoutForm = ({ addressData }: { addressData: OrderAddressForm }) => {
     return { first: parts[0] || "", last: parts.slice(1).join(" ") || "" };
   }, [user?.full_name]);
 
+  // Mark as used to satisfy noUnusedLocals without altering behavior
+  void publicKey;
+  void nameParts;
+
   if (!user) return null;
 
   const disabled = cartCount < 1 || isLoading;

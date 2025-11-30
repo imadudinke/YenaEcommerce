@@ -89,7 +89,6 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
             )}
           </Button>
 
-          {/* Logo */}
           <Link
             className="text-lg sm:text-xl font-extrabold tracking-tight shrink-0"
             to="/"
@@ -110,8 +109,9 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </form>
-
-          <CartButton />
+          <div className="flex items-center gap-2 shrink-0">
+            <CartButton />
+          </div>
 
           <div className="hidden sm:flex items-center gap-4 shrink-0">
             {activeUser ? (
@@ -148,13 +148,13 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                       <User className="w-4 h-4 text-gray-500" />
                       Profile Settings
                     </a>
-                    <a
-                      href="/orders"
+                    <Link
+                      to="/orders/track"
                       className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
                     >
                       <ShoppingCart className="w-4 h-4 text-gray-500" />
                       My Orders
-                    </a>
+                    </Link>
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={async () => {
@@ -306,13 +306,11 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                   </div>
                 </div>
 
-                {/* Account Section in Menu Footer */}
                 <div className="mt-auto px-4 pb-4 pt-4 border-t sticky bottom-0 bg-white">
                   <div className="text-xs font-semibold uppercase text-gray-500 mb-3 tracking-wide">
                     Account
                   </div>
                   {activeUser ? (
-                    // Mobile: tap avatar to toggle dropdown that pops upward
                     <div className="relative">
                       <button
                         type="button"
@@ -348,14 +346,14 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
                             <User className="w-4 h-4 text-gray-500" />
                             Profile Settings
                           </a>
-                          <a
-                            href="/orders"
+                          <Link
+                            to="/orders/track"
                             className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-700 text-sm transition duration-150"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             <ShoppingCart className="w-4 h-4 text-gray-500" />
                             My Orders
-                          </a>
+                          </Link>
                           <div className="border-t border-gray-100 my-1"></div>
                           <button
                             className="flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 rounded-lg text-red-600 text-sm w-full transition duration-150"
