@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from django.core.mail import send_mail 
-from mailersend import MailerSendClient, EmailBuilder 
 from django.conf import settings 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_bytes
@@ -33,30 +32,7 @@ class RestPasswordSerializer(serializers.Serializer):
 
         reset_link = f"{request.build_absolute_uri('/')}reset-password/{uid}/{token}"
 
-        api_key = settings.MAILERSEND_API_KEY
-        ms = MailerSendClient(api_key=api_key) # Initialize client with API key
-
-        subject = "Password Reset Request for Your Account"
-        html_body = f"<p>Hello {user.full_name or user.email},</p><p>Please use the link below to set a new password:</p><a href='{reset_link}'>{reset_link}</a>"
-        text_body = f"Hello {user.full_name or user.email},\n\nPlease use the link below to set a new password:\n{reset_link}"
-
-        email_message = (
-            EmailBuilder()
-            .from_email("imadudinkeremu@gmail.com") 
-            .to_many([{"email": user.email, "name": user.full_name or user.email}]) 
-            .subject(subject)
-            .html(html_body)
-            .text(text_body)
-            .build()
-        )
-
-        try:
-            response = ms.emails.send(email_message) 
-            print(f"Email sent successfully: {response.message_id}")
-        except Exception as e:
-            print(f"MailerSend SDK Error: {e}")
-            raise serializers.ValidationError("Email service temporarily unavailable.")
-
+       
 
         print("RESET LINK:", reset_link)
 

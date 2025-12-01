@@ -54,11 +54,20 @@ def _parse_origins(env_value, default=None):
             cleaned.append(s)
     return cleaned
 
-# Default development origins
-DEFAULT_FRONTEND_ORIGINS = [ALLOWED_HOSTS_ORIGIN]
+# Default development origins (safely parse env value to avoid None entries)
+DEFAULT_FRONTEND_ORIGINS = _parse_origins(ALLOWED_HOSTS_ORIGIN)
 
 # Populate ALLOWED_HOSTS from an env var or sensible defaults for dev
 ALLOWED_HOSTS = _parse_origins(os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1"))
+
+# If running on Render (or other platforms that expose the external hostname),
+# include the provided hostname so Django doesn't raise DisallowedHost.
+# Render sets RENDER_EXTERNAL_HOSTNAME to the service URL (e.g. myapp.onrender.com).
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if render_host:
+    # don't duplicate entries
+    if render_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(render_host)
 
 # Application definition
 
