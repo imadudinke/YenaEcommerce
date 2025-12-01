@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:8000/";
+const BASE_URL: string =
+  (import.meta.env.VITE_BACKEND_URL as string) || "http://localhost:7000/";
 
 function getCSRFToken() {
   const match = document.cookie.match(/csrftoken=([^;]+)/);
@@ -41,7 +42,7 @@ const apiFetch = async <T = any>(
       credentials: "include",
       body: processedBody,
     });
-
+    console.log(BASE_URL, "Fetchhhhhhhhhhhhhhhh");
     if (res.status === 401 || res.status === 403) {
       const errBody: any = await res
         .clone()

@@ -1,7 +1,9 @@
 import { useAuthStore } from "@/store/authStore";
 import apiFetch from "./fetchClient";
 import { useCartStore } from "@/store/cartStore";
-
+const BASE_URL: string =
+  (import.meta.env.VITE_BACKEND_URL as string) || "http://localhost:8000/";
+console.log(BASE_URL);
 interface NewUserProps {
   email: string;
   password: string;
@@ -68,10 +70,12 @@ export default loginAuth;
 
 export const forgotPassword = async (email: string) => {
   try {
-    const res = await fetch("http://localhost:8000/api/password_rest/", {
+    const res = await fetch(BASE_URL + "api/password_rest/", {
       method: "POST",
       headers: {
+        // THIS IS THE CRUCIAL PART:
         "Content-Type": "application/json",
+        // Include CSRF token if necessary for security
       },
       body: JSON.stringify({ email: email }),
     });

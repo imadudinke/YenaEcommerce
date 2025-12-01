@@ -33,7 +33,32 @@ CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
 CHAPA_CALLBACK_URL = os.getenv("CHAPA_CALLBACK_URL")
 CHAPA_RETURN_URL = os.getenv("CHAPA_RETURN_URL")
 MAILERSEND_API_KEY = os.getenv("MAILERSEND_API_KEY")
+ALLOWED_HOSTS_ORIGIN = os.getenv("ALLOWED_HOSTS_ORIGIN")
 
+# Helper to parse comma-separated origin lists from env safely
+def _parse_origins(env_value, default=None):
+    if not env_value:
+        return default or []
+    # split and strip, ignore empty
+    cleaned = []
+    for raw in env_value.split(','):
+        s = raw.strip()
+        if not s:
+            continue
+        # remove surrounding quotes if present
+        if (s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'")):
+            s = s[1:-1]
+        # remove trailing slashes for consistency
+        s = s.rstrip('/')
+        if s:
+            cleaned.append(s)
+    return cleaned
+
+# Default development origins
+DEFAULT_FRONTEND_ORIGINS = [ALLOWED_HOSTS_ORIGIN]
+
+# Populate ALLOWED_HOSTS from an env var or sensible defaults for dev
+ALLOWED_HOSTS = _parse_origins(os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1"))
 
 # Application definition
 
@@ -75,13 +100,10 @@ ROOT_URLCONF = 'core.urls'
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = _parse_origins(ALLOWED_HOSTS_ORIGIN, DEFAULT_FRONTEND_ORIGINS)
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-]
+# CSRF_TRUSTED_ORIGINS must be full origins (scheme://host). Use same list as CORS by default.
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 SESSION_COOKIE_SAMESITE = "Lax"
 
@@ -184,4 +206,3 @@ EMAIL_BACKEND = "anymail.backends.mailersend.EmailBackend"
 ANYMAIL = {
     "MAILERSEND_API_TOKEN": MAILERSEND_API_KEY,
 }
-DEFAULT_FROM_EMAIL = "imadudinkeremu@gmail.com"

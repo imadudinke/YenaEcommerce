@@ -15,8 +15,8 @@ import type { Product } from "@/components/home/ProductCard";
 import CartSummery from "@/components/cart/CartSummery";
 import { formatCurrency } from "@/helpers";
 import { Link } from "react-router-dom";
-
-const API_BASE = "http://localhost:8000";
+const BASE_URL: string =
+  (import.meta.env.VITE_BACKEND_URL as string) || "http://localhost:8000/";
 
 const CartAndCheckout = () => {
   const [_, setCartData] = useState<CartData | null>(null);
@@ -151,7 +151,7 @@ const CartAndCheckout = () => {
             const price = +item.price;
             const lineTotal = price * item.qty;
             const imgSrc = item.image
-              ? new URL(item.image, API_BASE).toString()
+              ? new URL(item.image, BASE_URL).toString()
               : "/placeholder-product.svg";
             return (
               <div
