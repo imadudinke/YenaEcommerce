@@ -202,7 +202,6 @@ REST_FRAMEWORK={
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
-EMAIL_BACKEND = "anymail.backends.mailersend.EmailBackend"
-ANYMAIL = {
+sANYMAIL = {
     "MAILERSEND_API_TOKEN": MAILERSEND_API_KEY,
 }
